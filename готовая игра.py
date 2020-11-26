@@ -4,6 +4,8 @@ import pygame as pg
 import pygame.freetype
 #from Iscander import *
 import thorpy
+import random
+import sys
 SCREEN_SIZE = (1000, 700)
 pg.init()
 name=input()
@@ -21,14 +23,87 @@ BROWN = (210, 105, 30)
 WHITE = (255, 255, 255)
 ORANGE = (255, 165, 0)
 
-FPS = 10
+FPS = 30
 size = 18
 org = 80
 c0 = 140
 c1 = org
 PO4 = 5
 FONT = pg.freetype.Font(None, size)
-seq = "ACGTAATGCTCGATGGATGCTAGCTACGTACTGGTACAC"
+seq=""
+number=random.randint(18,28)
+for i in range(number):
+    seq+=random.choice('ACGT')
+
+'''Часть Полины'''
+
+
+class Animation:
+    def __init__(self, screenSize):
+        self.RED = (255, 0, 0)
+        self.GREEN = (0, 255, 0)
+        self.YELLOW = (255, 255, 0)
+        self.MAGENTA = (255, 0, 255)
+        self.screenSize = screenSize
+        self.rectsize = 18
+        self.x = random.randint(0, screenSize[0] - 18)
+        self.y = random.randint(0, screenSize[1] - 18)
+        self.xSpeed = random.randint(-100, 100)
+        self.ySpeed = random.randint(-100, 100)
+
+    def move(self, sec):
+        self.x += sec * self.xSpeed
+        self.y += sec * self.ySpeed
+        if self.x + self.rectsize > self.screenSize[0]:
+            self.xSpeed = -self.xSpeed
+            self.x = self.screenSize[0] - self.rectsize
+        if self.x < 0:
+            self.xSpeed = -self.xSpeed
+            self.x = 0
+        if self.y + self.rectsize > self.screenSize[1]:
+            self.ySpeed = -self.ySpeed
+            self.y = self.screenSize[1] - self.rectsize
+        if self.y < 0:
+            self.ySpeed = -self.ySpeed
+            self.y = 0
+
+    def getXCoordinates(self):
+        return self.x
+
+    def getYCoordinates(self):
+        return self.y
+
+    def changeSpeed(self, speed):
+        self.xSpeed = 0
+        self.ySpeed = 0
+
+    def setCoordinates(self, coord):
+        self.x = coord[0]
+        self.y = coord[1]
+
+    def drawA(self, screen):
+        pg.draw.rect(screen, self.RED, (self.x, self.y, self.rectsize, self.rectsize))
+        pg.draw.polygon(screen, self.RED,
+                        [(self.x, self.y), (self.x + 18, self.y), (self.x + 18 // 2, self.y - 18 // 2)])
+        pg.freetype.Font(None, 18).render_to(screen, (self.x + 2, self.y + 1), "A", (0, 0, 0))
+
+    def drawT(self, screen):
+        pg.draw.rect(screen, self.GREEN, (self.x, self.y, self.rectsize, self.rectsize))
+        pg.draw.polygon(screen, self.GREEN, [(self.x, self.y), (self.x + 18 // 2, self.y), (self.x, self.y - 18 // 2)])
+        pg.draw.polygon(screen, self.GREEN,
+                        [(self.x + 18, self.y), (self.x + 18 // 2, self.y), (self.x + 18, self.y - 18 // 2)])
+        pg.freetype.Font(None, 18).render_to(screen, (self.x + 2, self.y + 1), "T", (0, 0, 0))
+
+    def drawC(self, screen):
+        pg.draw.rect(screen, self.MAGENTA, (self.x, self.y, self.rectsize, self.rectsize))
+        pg.draw.rect(screen, self.MAGENTA, (self.x + 18 // 3, self.y - 18 // 2, 18 // 3, 18 // 2))
+        pg.freetype.Font(None, 18).render_to(screen, (self.x + 2, self.y + 1), "C", (0, 0, 0))
+
+    def drawG(self, screen):
+        pg.draw.rect(screen, self.YELLOW, (self.x, self.y, self.rectsize, self.rectsize))
+        pg.draw.rect(screen, self.YELLOW, (self.x, self.y - 18 // 2, 18 // 3, 18 // 2))
+        pg.draw.rect(screen, self.YELLOW, (self.x + 2 * 18 // 3, self.y - 18 // 2, 18 // 3, 18 // 2))
+        pg.freetype.Font(None, 18).render_to(screen, (self.x + 2, self.y + 1), "G", (0, 0, 0))
 
 '''Часть Артема
    Задает параметры построения РНК при нажатии клавишь
@@ -39,27 +114,27 @@ seq = "ACGTAATGCTCGATGGATGCTAGCTACGTACTGGTACAC"
 def Ad(a,y,h):
     pg.draw.polygon(screen, RED,[(a,y),(a+h,y),(a+h,y+h),(a+int(h/2),y+int(h*1.5)),(a,y+h)])
     pg.draw.line(screen, CYAN,(a+h,y+int(h/2)),(a+int(h*length),y+int(h/2)),5)
-    FONT.render_to(screen, (a+4,y+2), "A", (255, 255, 255))
+    FONT.render_to(screen, (a+int(0.2*h),y+int(0.2*h)), "A", (255, 255, 255))
     pg.display.update()
 
 def Cyt(a,y,h):
     pg.draw.polygon(screen, MAGENTA,[(a,y),(a+h,y),(a+h,y+h),(a+int(0.7*h),y+h),(a+int(0.7*h),y+int(1.5*h)),
                                      (a+int(0.3*h),y+int(1.3*h)),(a+int(0.3*h),y+h), (a,y+h)])
     pg.draw.line(screen, CYAN,(a+h,y+int(0.5*h)),(a+int(h*length),y+int(h/2)),5)
-    FONT.render_to(screen, (a+4,y+2), "C", (255, 255, 255))
+    FONT.render_to(screen, (a+int(0.2*h),y+int(0.2*h)), "C", (255, 255, 255))
     pg.display.update()
 
 def Gua( a, y,h):
     pg.draw.polygon(screen, YELLOW, [(a, y), (a + h, y), (a + h, y + int(1.5*h)), (a + int(0.7*h), y + int(1.5*h)),
                                      (a+int(0.7*h), y + h),(a+int(0.3*h),y+h),(a+int(0.3*h),y+int(1.5*h)),(a,y+int(1.5*h))])
     pg.draw.line(screen, CYAN, (a + h, y + int(0.5 * h)), (a + int(h*length), y + int(h / 2)), 5)
-    FONT.render_to(screen, (a + 4, y + 2), "G", (255, 255, 255))
+    FONT.render_to(screen, (a+int(0.2*h),y+int(0.2*h)), "G", (255, 255, 255))
     pg.display.update()
 def Ura(a, y,h):
     pg.draw.polygon(screen, GREEN, [(a, y), (a + h, y), (a + h, y + int(1.5*h)), (a + int(h / 2), y + h),
                                     (a, y + int(1.5*h)),(a+int(0.3*h),y+h)])
     pg.draw.line(screen, CYAN, (a + h, y + int(0.5 * h)), (a + int(h*length), y + int(h / 2)), 5)
-    FONT.render_to(screen, (a + 4, y + 2), "U", (255, 255, 255))
+    FONT.render_to(screen, (a+int(0.2*h),y+int(0.2*h)), "U", (255, 255, 255))
     pygame.display.update()
 def start_execution():
     """Обработчик события нажатия на кнопку Start.
@@ -173,21 +248,52 @@ def Menu():
     box.blit()
     box.update()
     return menu,box,timer
-menu,box,timer = Menu()
 pg.draw.line(screen,WHITE,(0,int(SCREEN_SIZE[1]/2)),(SCREEN_SIZE[0],int(SCREEN_SIZE[1]/2)))
 pg.display.update()
-x=110
-z=450
-h=15
+x=142
+z=460
+h=14.9
 length=1.55
 count=0
 finished = False
 str1=''
 perform_execution = False
+rectList = []
+screenSize1=(SCREEN_SIZE[0],int(SCREEN_SIZE[1]/2))
+rectList = []
+for i in range(4):
+    rect = Animation(screenSize1)
+    rectList.append(rect)
+rectList1 = []
+for i in range(4):
+    rect = Animation(screenSize1)
+    rectList1.append(rect)
+rectList2 = []
+for i in range(4):
+    rect = Animation(screenSize1)
+    rectList2.append(rect)
+rectList3 = []
+
+for i in range(4):
+    rect = Animation(screenSize1)
+    rectList3.append(rect)
+
+for i in range(len(seq)):
+    if seq[i] == 'A':
+        a_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 200], size)
+        t_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 150], size)
+    if seq[i] == 'G':
+        g_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 200], size)
+        c_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 150], size)
+    if seq[i] == 'T':
+        t_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 200], size)
+        a_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 150], size)
+    if seq[i] == 'C':
+        c_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 200], size)
+        g_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 150], size)
+
 while not finished:
-    clock.tick(FPS)
-    DNA(org)
-    Pasa(c0)
+    menu, box, timer = Menu()
     for event in pg.event.get():
         if event.type == pg.QUIT:
             finished = True
@@ -207,7 +313,6 @@ while not finished:
                     if seq[i] == 'C':
                         c_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 200], size)
                         g_draw([c0 + (size + PO4) * i, SCREEN_SIZE[1] - 150], size)
-
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_u:
                 Ura(x, z, h)
@@ -215,24 +320,52 @@ while not finished:
                 str1 += 'A'
                 c1 += (size + PO4)
                 count += 1
+                DNA(org)
+                Pasa(c0)
             elif event.key == pg.K_a:
                 Ad(x, z, h)
                 x += int(h * length)
                 str1 += 'T'
                 c1 += (size + PO4)
                 count += 1
+                DNA(org)
+                Pasa(c0)
             elif event.key == pg.K_c:
                 Cyt(x, z, h)
                 x += int(h * length)
                 str1 += 'G'
                 c1 += (size + PO4)
                 count += 1
+                DNA(org)
+                Pasa(c0)
             elif event.key == pg.K_g:
                 Gua(x, z, h)
                 x += int(h * length)
                 str1 += 'C'
                 c1 += (size + PO4)
                 count += 1
+                DNA(org)
+                Pasa(c0)
+    sec = clock.tick() / 1000.
+    for rect in rectList:
+        rect.move(sec)
+    for rect in rectList1:
+        rect.move(sec)
+    for rect in rectList2:
+        rect.move(sec)
+    for rect in rectList3:
+        rect.move(sec)
+
+    pg.draw.rect(screen,(0,0,0), pygame.Rect((0, 0), screenSize1))
+
+    for rect in rectList:
+        rect.drawA(screen)
+    for rect in rectList1:
+        rect.drawT(screen)
+    for rect in rectList2:
+        rect.drawC(screen)
+    for rect in rectList3:
+        rect.drawG(screen)
     if x > 1000:
         pg.draw.rect(screen, BLACK, (0, z, SCREEN_SIZE[0], 2 * h))
         x=110
@@ -243,6 +376,7 @@ while not finished:
         pg.draw.rect(screen, BLACK, (0, SCREEN_SIZE[1] - 220, SCREEN_SIZE[0], SCREEN_SIZE[1]))
     if count == len(seq):
         finished = True
+    clock.tick(FPS)
 pg.quit()
 pg.init()
 FPS = 30
@@ -283,3 +417,4 @@ file.close()
 out = open('table.txt', 'w')
 out.write(s+'\n'+ name + "биотехнолог на" + str(procent)+"%")
 out.close()
+
