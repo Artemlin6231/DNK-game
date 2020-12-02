@@ -392,7 +392,22 @@ FONT=pygame.freetype.Font(None, 20)
 FONT.render_to(screen, (50, 50), "Истинная строка " + seq, ORANGE)
 FONT.render_to(screen, (50, 150), "Ваша  строка " + str1, ORANGE)
 FONT1=pygame.freetype.Font(None, 20)
+
+state=0
+file = open('table.txt', 'r')
+data = file.readlines()
+file.close()
+n = len(data)
+for i in range(n):
+    s = list(data[i].split())
+    if s[0]=='':
+        continue
+    elif(int(s[3])<=procent):
+        state+=1
+state*=100//n        
+
 FONT1.render_to(screen, (50, 250), "Вы биотехнолог на " + str(procent)+'%', ORANGE)
+FONT1.render_to(screen, (50, 350), "Вы превзошли " + str(state)+"% пользователей", ORANGE)
 pg.display.update()
 clock = pygame.time.Clock()
 clock.tick(1)
@@ -418,4 +433,3 @@ file.close()
 out = open('table.txt', 'w', encoding= 'utf8')
 out.write(s+'\n'+ name + " биотехнолог на " + str(procent)+" %")
 out.close()
-
