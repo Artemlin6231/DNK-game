@@ -8,6 +8,7 @@ import random
 import sys
 SCREEN_SIZE = (1000, 700)
 pg.init()
+print('Введите имя игрока')
 name=input()
 screen = pg.display.set_mode(SCREEN_SIZE)
 clock = pg.time.Clock()
@@ -31,7 +32,7 @@ c1 = org
 PO4 = 5
 FONT = pg.freetype.Font(None, size)
 seq=""
-number=random.randint(18,28)
+number=random.randint(30,45)
 for i in range(number):
     seq+=random.choice('ACGT')
 
@@ -414,7 +415,7 @@ except:
 '''запись в файл'''
 s = file.read()
 file.close()
-out = open('table.txt', 'w')
-out.write(s+'\n'+ name + "биотехнолог на" + str(procent)+"%")
+out = open('table.txt', 'w', encoding= 'utf8')
+out.write(s+'\n'+ name + " биотехнолог на " + str(procent)+" %")
 out.close()
 
