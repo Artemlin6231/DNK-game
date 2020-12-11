@@ -435,5 +435,8 @@ file = open('table.txt', 'r')
 s = file.read()
 file.close()
 out = open('table.txt', 'w', encoding= 'utf8')
-out.write(s+'\n'+ name + " биотехнолог на " + str(procent)+" %")
+if n==0:
+    out.write(name + " биотехнолог на " + str(procent)+" %")
+else:
+    out.write(s+'\n'+ name + " биотехнолог на " + str(procent)+" %")
 out.close()
