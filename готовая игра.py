@@ -409,8 +409,11 @@ for i in range(n):
         continue
     elif(int(s[3])<=procent):
         state+=1
-state*=100//n        
-
+if n !=0:
+    state*=100//n        
+else:
+    state = 100
+    
 FONT1.render_to(screen, (50, 250), "Вы биотехнолог на " + str(procent)+'%', ORANGE)
 FONT1.render_to(screen, (50, 350), "Вы превзошли " + str(state)+"% пользователей", ORANGE)
 pg.display.update()
