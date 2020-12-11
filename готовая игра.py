@@ -394,7 +394,12 @@ FONT.render_to(screen, (50, 150), "Ваша  строка " + str1, ORANGE)
 FONT1=pygame.freetype.Font(None, 20)
 
 state=0
-file = open('table.txt', 'r')
+try:
+    file = open('table.txt', 'r')
+except:
+    file = open('table.txt', 'w')
+    file.close()
+    file = open('table.txt', 'r')
 data = file.readlines()
 file.close()
 n = len(data)
@@ -420,14 +425,10 @@ while not finished:
             finished = True
 
 pg.quit()
-try:
-    file = open('table.txt', 'r')
-except:
-    file = open('table.txt', 'w')
-    file.close()
-    file = open('table.txt', 'r')
+
 
 '''запись в файл'''
+file = open('table.txt', 'r')
 s = file.read()
 file.close()
 out = open('table.txt', 'w', encoding= 'utf8')
